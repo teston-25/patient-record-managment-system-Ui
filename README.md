@@ -1,57 +1,84 @@
 🏥 Patient Record Management System (PRMS) - Frontend
-<div align="center">
-https://img.shields.io/badge/React-19.1.0-61DAFB?style=for-the-badge&logo=react
-https://img.shields.io/badge/Redux-2.8.2-764ABC?style=for-the-badge&logo=redux
-https://img.shields.io/badge/Vite-6.3.5-646CFF?style=for-the-badge&logo=vite
-https://img.shields.io/badge/Tailwind-4.1.7-06B6D4?style=for-the-badge&logo=tailwindcss
+https://img.shields.io/badge/React-19.1.0-61DAFB.svg
+https://img.shields.io/badge/Redux-2.8.2-764ABC.svg
+https://img.shields.io/badge/Vite-6.3.5-646CFF.svg
+https://img.shields.io/badge/Tailwind-4.1.7-06B6D4.svg
+https://img.shields.io/badge/License-ISC-yellow.svg
 
 A comprehensive React-based healthcare management interface providing role-based access to patient records, appointment scheduling, user management, and reporting capabilities for dental clinics.
 
-Features • Installation • Tech Stack • Contributing
-
-</div>
 🌟 Overview
 The PRMS frontend serves four distinct user roles with tailored interfaces: administrators, staff members, doctors, and patients. Built with modern React architecture using Redux for state management and React Router for navigation.
 
 🛠️ Technology Stack
-Technology	Version	Purpose	Badge
-React	^19.1.0	Core frontend framework	https://img.shields.io/badge/React-19.1.0-61DAFB?logo=react
-Redux Toolkit	^2.8.2	Centralized state management	https://img.shields.io/badge/Redux-2.8.2-764ABC?logo=redux
-React Router	^7.6.0	Client-side routing	https://img.shields.io/badge/React_Router-7.6.0-CA4245?logo=react-router
-Tailwind CSS	^4.1.7	Utility-first styling	https://img.shields.io/badge/Tailwind-4.1.7-06B6D4?logo=tailwindcss
-Vite	^6.3.5	Build tool and dev server	https://img.shields.io/badge/Vite-6.3.5-646CFF?logo=vite
-Axios	^1.9.0	HTTP client for API communication	https://img.shields.io/badge/Axios-1.9.0-5A29E4?logo=axios
-Chart.js	^4.5.0	Data visualization	https://img.shields.io/badge/Chart.js-4.5.0-FF6384?logo=chart.js
-React Hook Form	^7.60.0	Form management	https://img.shields.io/badge/React_Hook_Form-7.60.0-EC5990?logo=react-hook-form
-📋 Prerequisites
-Node.js (latest LTS version recommended)
+Technology	Version	Purpose
+React	^19.1.0	Core frontend framework
+Redux Toolkit	^2.8.2	Centralized state management
+React Router	^7.6.0	Client-side routing
+Tailwind CSS	^4.1.7	Utility-first styling
+Vite	^6.3.5	Build tool and dev server
+Axios	^1.9.0	HTTP client for API communication
+Chart.js	^4.5.0	Data visualization
+React Hook Form	^7.60.0	Form management
+✨ Features
+Core Healthcare Management
+Patient Management - Complete CRUD operations with demographic tracking
+
+Appointment Scheduling - Status-based appointment workflow management
+
+Medical History - Comprehensive diagnosis and treatment record keeping
+
+User Authentication - JWT-based authentication with role-based access
+
+Security & Compliance
+Role-Based Access Control - Four-tier permission system (admin, staff, doctor, patient)
+
+Data Validation - Comprehensive form validation with error handling
+
+Responsive Design - Mobile-optimized interface for all devices
+
+Developer Experience
+Modern Tooling - Vite for fast development and builds
+
+State Management - Redux Toolkit for predictable state management
+
+Component Library - Reusable UI components with Tailwind CSS
+
+🚀 Quick Start
+Prerequisites
+Node.js 18+
 
 npm or yarn package manager
 
 Access to PRMS backend API
 
-🚀 Installation & Setup
-1. Clone the repository
+Installation
+Clone the repository
+
 bash
-git clone <repository-url>  
-cd patient-recored-managment-system-Ui
-2. Install dependencies
+git clone https://github.com/your-username/patient-record-management-system-ui.git
+cd patient-record-management-system-ui
+Install dependencies
+
 bash
 npm install
-3. Configure backend connection
+Environment Configuration
 The application is configured to connect to the backend at:
 
 text
 https://prms-backend-rrdo.onrender.com/
-4. Start development server
+Start development server
+
 bash
 npm run dev
+The application will start on http://localhost:5173 with hot reload enabled.
+
 📜 Available Scripts
-Script	Command	Purpose	Status
-dev	vite	Start development server with HMR	https://img.shields.io/badge/Dev-Active-brightgreen
-build	vite build	Build production bundle	https://img.shields.io/badge/Build-Ready-blue
-lint	eslint .	Run code linting	https://img.shields.io/badge/Lint-Passing-green
-preview	vite preview	Preview production build	https://img.shields.io/badge/Preview-Available-yellowgreen
+Script	Command	Purpose
+dev	vite	Start development server with HMR
+build	vite build	Build production bundle
+lint	eslint .	Run code linting
+preview	vite preview	Preview production build
 📁 Project Structure
 text
 src/  
@@ -111,30 +138,19 @@ The application implements comprehensive role-based routing:
 
 ⚙️ Profile settings
 
-✨ Key Features
-📊 Dashboard Analytics
-Real-time operational metrics including active users, total patients, appointments, and system users with trend indicators.
+🏗️ Architecture
+Technology Stack
+Framework: React with modern hooks
 
-👥 User Management
-Comprehensive user administration with role-based permissions, search/filter capabilities, and CRUD operations.
+State Management: Redux Toolkit with feature slices
 
-👤 Profile Management
-User profile editing with role and status display, supporting both individual and administrative updates.
+Styling: Tailwind CSS with responsive design
 
-📱 Responsive Design
-Mobile-optimized layouts with Tailwind CSS breakpoints for optimal viewing across devices.
+Routing: React Router with protected routes
 
-⚙️ Development Configuration
-🔧 Vite Configuration
-⚛️ React plugin with Fast Refresh
+Build Tool: Vite for fast development
 
-🎨 Tailwind CSS integration
-
-🔄 Development proxy for backend API
-
-⚡ Optimized dependencies for better performance
-
-🏪 State Management
+State Management
 Redux Toolkit with feature-specific slices:
 
 🔐 Authentication state
@@ -147,19 +163,52 @@ Redux Toolkit with feature-specific slices:
 
 📈 Reports and analytics
 
-🔌 API Integration
-The frontend communicates with the PRMS backend through Axios HTTP client with proxy configuration for seamless development experience.
+API Integration
+The frontend communicates with the PRMS backend through Axios HTTP client with interceptors for authentication and error handling.
+
+📊 Role-Based Access Matrix
+Role	Patient Mgmt	Appointments	Medical History	User Mgmt	Reports
+Admin	✅ Full	✅ Full	✅ Full	✅ Full	✅ Full
+Staff	✅ Full	✅ Full	✅ CRUD	✅ Limited	✅ View
+Doctor	✅ View	✅ Assigned	✅ CRUD	❌ None	✅ View
+Patient	✅ Own Profile	✅ Own Only	❌ None	❌ None	❌ None
+🧪 Development
+Available Scripts
+bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+Development Features
+Hot Module Replacement for fast development
+
+ESLint configuration for code quality
+
+Tailwind CSS JIT compiler for optimized styling
+
+Proxy configuration for API development
 
 🤝 Contributing
-🏗️ Follow the established feature-based architecture
+Fork the repository
 
-🏪 Use Redux Toolkit for state management
+Create a feature branch (git checkout -b feature/amazing-feature)
 
-🎨 Implement responsive design with Tailwind CSS
+Commit your changes (git commit -m 'Add amazing feature')
 
-🔐 Maintain role-based access control patterns
+Push to the branch (git push origin feature/amazing-feature)
 
-✅ Run linting before commits: npm run lint
+Open a Pull Request
+
+Development Guidelines
+Follow the established feature-based architecture
+
+Use Redux Toolkit for state management
+
+Implement responsive design with Tailwind CSS
+
+Maintain role-based access control patterns
+
+Run linting before commits: npm run lint
 
 🚀 Production Deployment
 Build the application:
