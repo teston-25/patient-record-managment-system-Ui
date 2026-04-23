@@ -3,14 +3,16 @@ import auditLogAPI from "../../../API/accesLogAPI";
 
 export const fetchAuditLogs = createAsyncThunk(
   "logs/fetchAuditLogs",
-  async (_, thunkAPI) => {
+  async ({ page = 1, limit = 20 } = {}, thunkAPI) => {
     try {
-      const logs = await auditLogAPI.getAuditLogs();
-      return logs;
+      const response = await auditLogAPI.getAuditLogs(page, limit);
+      return response;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || "Failed to fetch audit logs");
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch audit logs",
+      );
     }
-  }
+  },
 );
 
 export const fetchFilteredAuditLogs = createAsyncThunk(
@@ -20,16 +22,23 @@ export const fetchFilteredAuditLogs = createAsyncThunk(
       const res = await auditLogAPI.getFilteredAuditLogs(filters, page, limit);
       return res;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || "Failed to fetch filtered audit logs");
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch filtered audit logs",
+      );
     }
-  }
+  },
 );
 
 const logSlice = createSlice({
   name: "logs",
   initialState: {
     logs: [],
-    pagination: null,
+    pagination: {
+      totalLogs: 0,
+      totalPages: 1,
+      currentPage: 1,
+      limit: 20,
+    },
     loading: false,
     error: null,
   },
@@ -42,7 +51,8 @@ const logSlice = createSlice({
       })
       .addCase(fetchAuditLogs.fulfilled, (state, action) => {
         state.loading = false;
-        state.logs = action.payload;
+        state.logs = action.payload.data || [];
+        state.pagination = action.payload.pagination;
       })
       .addCase(fetchAuditLogs.rejected, (state, action) => {
         state.loading = false;
@@ -54,7 +64,7 @@ const logSlice = createSlice({
       })
       .addCase(fetchFilteredAuditLogs.fulfilled, (state, action) => {
         state.loading = false;
-        state.logs = action.payload.logs;
+        state.logs = action.payload.data || action.payload.logs || [];
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchFilteredAuditLogs.rejected, (state, action) => {
@@ -64,4 +74,4 @@ const logSlice = createSlice({
   },
 });
 
-export default logSlice.reducer; 
+export default logSlice.reducer;

@@ -111,9 +111,10 @@ export default function AppRoutes() {
         <Route element={<DoctorLayout />}>
           <Route path="dashboard" element={<DocDashboard />} />
           <Route path="patients" element={<Patients />} />
-          {/* <Route path="appointments" element={<Appointments />} /> */}
-          <Route path="appointments/view/:id" element={<ViewAppointment />} />
-          <Route path="appointments/view/:id" element={<DoctorAppointmentView />} />
+          <Route
+            path="appointments/view/:id"
+            element={<DoctorAppointmentView />}
+          />
           <Route path="appointments" element={<DoctorAppointmentsList />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />

@@ -8,7 +8,7 @@ export default function StaffLayout() {
   const dispatch = useDispatch();
   const sidebarOpen = useSelector((state) => state.staff.sidebarOpen);
   return (
-    <div className="flex w-full min-h-screen bg-gray-50">
+    <div className="flex w-full min-h-screen bg-gradient-to-br from-white via-slate-50 to-teal-50">
       {/* Desktop Sidebar */}
       <div className="hidden md:block">
         <Sidebar role="staff" />
@@ -29,10 +29,10 @@ export default function StaffLayout() {
       )}
       <div className="flex flex-col flex-1">
         <StaffNavbar />
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto bg-white">
           <Outlet />
         </main>
       </div>
     </div>
   );
-} 
+}

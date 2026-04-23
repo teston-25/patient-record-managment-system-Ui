@@ -14,9 +14,9 @@ const api = axios.create({
   baseURL: getBaseURL(),
   headers: {
     "Content-Type": "application/json",
-    "Accept": "application/json",
+    Accept: "application/json",
   },
-  withCredentials: false, // Set to false for cross-origin requests
+  withCredentials: false,
   timeout: 10000, // 10 second timeout
 });
 
@@ -32,11 +32,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 0 || error.code === 'ERR_NETWORK') {
-      console.error('CORS Error: Unable to connect to the server. Please check if the backend is running and CORS is properly configured.');
+    if (error.response?.status === 0 || error.code === "ERR_NETWORK") {
+      console.error(
+        "CORS Error: Unable to connect to the server. Please check if the backend is running and CORS is properly configured.",
+      );
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

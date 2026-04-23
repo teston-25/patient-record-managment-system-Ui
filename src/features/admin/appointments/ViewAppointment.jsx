@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAppointments } from "./appointmentSlice";
-import { selectCurrentAppointment } from "../../../components/common/selectors";
+import { fetchAppointmentById } from "./appointmentSlice";
+import {
+  selectCurrentAppointment,
+  selectAppointmentState,
+} from "../../../components/common/selectors";
 import AppointmentForm from "./AppointmentForm";
 import Spinner from "../../../components/common/Spinner";
 import ErrorMessage from "../../../components/common/ErrorMessage";
@@ -13,13 +16,37 @@ const ViewAppointment = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state.auth);
-  const userRole = user?.role || 'admin';
+  // Get auth state
+  const { user, isLoading: authLoading } = useSelector((state) => state.auth);
 
-  if (userRole === 'doctor') {
+  // Use the correct selectors
+  const appointment = useSelector((state) =>
+    selectCurrentAppointment(state, id),
+  );
+  const { loading, error } = useSelector(selectAppointmentState);
+
+  useEffect(() => {
+    if (!appointment && id) {
+      dispatch(fetchAppointmentById(id));
+    }
+  }, [dispatch, id, appointment]);
+
+  if (authLoading) {
+    return (
+      <div className="max-w-4xl mx-auto p-4">
+        <Spinner text="Checking authorization..." />
+      </div>
+    );
+  }
+
+  const userRole = user?.role || "admin";
+
+  if (userRole === "doctor") {
     return (
       <div className="max-w-4xl mx-auto p-4 text-center">
-        <div className="text-red-500 text-lg font-semibold mb-4">Not authorized to view appointment details.</div>
+        <div className="text-red-500 text-lg font-semibold mb-4">
+          Not authorized to view appointment details.
+        </div>
         <button
           onClick={() => navigate(-1)}
           className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
@@ -30,19 +57,8 @@ const ViewAppointment = () => {
     );
   }
 
-  const currentAppointment = useSelector((state) =>
-    selectCurrentAppointment(state, id)
-  );
-  const { loading, error } = useSelector((state) => state.appointments);
-
-  useEffect(() => {
-    // If we don't have appointments loaded, fetch them
-    if (!currentAppointment) {
-      dispatch(fetchAppointments());
-    }
-  }, [dispatch, currentAppointment]);
-
-  if (loading === "pending") {
+  // Handle loading states
+  if (loading === true || loading === "loading") {
     return (
       <div className="max-w-4xl mx-auto p-4">
         <Spinner text="Loading appointment details..." />
@@ -50,6 +66,7 @@ const ViewAppointment = () => {
     );
   }
 
+  // Handle error state
   if (error) {
     return (
       <div className="max-w-4xl mx-auto p-4">
@@ -64,7 +81,8 @@ const ViewAppointment = () => {
     );
   }
 
-  if (!currentAppointment) {
+  // Handle not found
+  if (!appointment) {
     return (
       <div className="max-w-4xl mx-auto p-4">
         <div className="text-red-500 mb-4">Appointment not found</div>
@@ -86,7 +104,7 @@ const ViewAppointment = () => {
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow">
-        <AppointmentForm appointment={currentAppointment} isViewMode={true} />
+        <AppointmentForm appointment={appointment} isViewMode={true} />
       </div>
     </div>
   );

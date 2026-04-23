@@ -8,7 +8,7 @@ export default function DoctorLayout() {
   const dispatch = useDispatch();
   const sidebarOpen = useSelector((state) => state.admin.sidebarOpen);
   return (
-    <div className="flex w-full min-h-screen bg-white">
+    <div className="flex w-full min-h-screen bg-gradient-to-br from-white via-slate-50 to-teal-50">
       {/* Desktop Sidebar */}
       <div className="hidden md:block">
         <Sidebar role="doctor" />
@@ -29,10 +29,10 @@ export default function DoctorLayout() {
       )}
       <div className="flex flex-col flex-1">
         <DoctorNavbar />
-        <main className="flex-1 p-6 bg-[#f5f7fa]">
+        <main className="flex-1 p-6 bg-white">
           <Outlet />
         </main>
       </div>
     </div>
   );
-} 
+}

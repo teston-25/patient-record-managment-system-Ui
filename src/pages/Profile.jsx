@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../services/axios";
 import toast from "react-hot-toast";
+import { getProfile } from "../API/profileAPI";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -16,12 +16,8 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await api.get("/profile/me", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setUser(res.data.data.user);
+        const res = await getProfile();
+        setUser(res.data.user);
       } catch (err) {
         console.error("Failed to load profile", err);
         handleLogout();

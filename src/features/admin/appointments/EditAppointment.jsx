@@ -7,7 +7,6 @@ import {
   fetchAppointmentById,
   clearAppointmentError,
   fetchAppointments,
-  deleteAppointment,
 } from "./appointmentSlice";
 import toast from "react-hot-toast";
 import { selectCurrentAppointment } from "../../../components/common/selectors";
@@ -20,14 +19,15 @@ const EditAppointment = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const currentAppointmentFromList = useSelector((state) =>
-    selectCurrentAppointment(state, id)
+    selectCurrentAppointment(state, id),
   );
-  const currentAppointment = useSelector((state) => state.appointments.currentAppointment) || currentAppointmentFromList;
-  console.log(currentAppointment);
+  const currentAppointment =
+    useSelector((state) => state.appointments.currentAppointment) ||
+    currentAppointmentFromList;
 
   const { loading, error, status } = useSelector((state) => state.appointments);
   const { user } = useSelector((state) => state.auth);
-  const userRole = user?.role || 'admin';
+  const userRole = user?.role || "admin";
 
   useEffect(() => {
     dispatch(clearAppointmentError());
@@ -48,18 +48,19 @@ const EditAppointment = () => {
         date: new Date(`${data.date}T${data.time}`).toISOString(),
         reason: data.reason,
         // Only allow doctors to update status
-        ...(userRole === 'doctor' && { status: data.status }),
+        ...(userRole === "doctor" && { status: data.status }),
       };
 
       // Remove undefined values
       const cleanData = JSON.parse(JSON.stringify(appointmentData));
 
       const result = await dispatch(
-        updateAppointment({ id, updateData: cleanData })
+        updateAppointment({ id, updateData: cleanData }),
       ).unwrap();
 
       // Handle backend response structure
-      const updatedAppointment = result?.data?.appointment || result?.appointment || result;
+      const updatedAppointment =
+        result?.data?.appointment || result?.appointment || result;
       if (updatedAppointment?._id) {
         toast.success("Appointment updated successfully!");
         dispatch(fetchAppointments());
@@ -70,7 +71,7 @@ const EditAppointment = () => {
       toast.error(
         error.message ||
           error.response?.data?.message ||
-          "Failed to update appointment"
+          "Failed to update appointment",
       );
     } finally {
       setIsSubmitting(false);

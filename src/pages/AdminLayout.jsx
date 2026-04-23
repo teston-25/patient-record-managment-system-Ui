@@ -31,7 +31,7 @@ const AdminLayout = () => {
 
   return (
     <>
-      <div className="flex w-full min-h-screen bg-gray-100">
+      <div className="flex w-full min-h-screen bg-gradient-to-br from-white via-slate-50 to-teal-50">
         {/* Desktop Sidebar */}
         <div className="hidden md:block">
           <Sidebar role="admin" />
@@ -39,7 +39,9 @@ const AdminLayout = () => {
         {/* Mobile Sidebar */}
         <div
           className={`fixed inset-0 z-40 md:hidden transition-transform duration-300 ${
-            useSelector((state) => state.admin.sidebarOpen) ? "translate-x-0" : "-translate-x-full"
+            useSelector((state) => state.admin.sidebarOpen)
+              ? "translate-x-0"
+              : "-translate-x-full"
           }`}
         >
           <Sidebar role="admin" />
@@ -52,7 +54,7 @@ const AdminLayout = () => {
         )}
         <div className="flex-1 flex flex-col overflow-hidden">
           <Navbar />
-          <main className="flex-1 overflow-y-auto bg-gray-100">
+          <main className="flex-1 overflow-y-auto bg-white">
             <Outlet />
           </main>
         </div>

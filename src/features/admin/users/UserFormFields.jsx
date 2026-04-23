@@ -29,9 +29,12 @@ const UserFormFields = ({ formData, setFormData, readOnly = false }) => {
             type="text"
             name="fullName"
             value={formData.fullName || ""}
-            readOnly
+            onChange={handleChange}
+            readOnly={readOnly}
             required
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-gray-100 cursor-not-allowed p-2 border"
+            className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
+              readOnly ? "bg-gray-100 cursor-not-allowed" : "bg-white"
+            } p-2 border`}
           />
         </div>
 
@@ -48,9 +51,12 @@ const UserFormFields = ({ formData, setFormData, readOnly = false }) => {
             type="email"
             name="email"
             value={formData.email || ""}
-            readOnly
+            onChange={handleChange}
+            readOnly={readOnly}
             required
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-gray-100 cursor-not-allowed p-2 border"
+            className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
+              readOnly ? "bg-gray-100 cursor-not-allowed" : "bg-white"
+            } p-2 border`}
           />
         </div>
 
@@ -66,8 +72,8 @@ const UserFormFields = ({ formData, setFormData, readOnly = false }) => {
             id="role"
             name="role"
             value={formData.role || ""}
-            onChange={readOnly ? undefined : handleChange}
-            disabled={readOnly ? true : false}
+            onChange={handleChange}
+            disabled={readOnly}
             required
             className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm ${
               readOnly ? "bg-gray-100 cursor-not-allowed" : "bg-white"
@@ -75,9 +81,9 @@ const UserFormFields = ({ formData, setFormData, readOnly = false }) => {
           >
             <option value="">Select Role</option>
             <option value="admin">Admin</option>
-            <option value="staff">Staff</option>
-            <option value="doctor">Doctor</option>
             <option value="user">User</option>
+            <option value="editor">Editor</option>
+            {/* Add other roles as needed */}
           </select>
         </div>
 
@@ -88,8 +94,8 @@ const UserFormFields = ({ formData, setFormData, readOnly = false }) => {
             type="checkbox"
             name="active"
             checked={formData.active || false}
-            onChange={readOnly ? undefined : handleChange}
-            disabled={readOnly ? true : false}
+            onChange={handleChange}
+            disabled={readOnly}
             className={`h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 ${
               readOnly ? "bg-gray-100 cursor-not-allowed" : "bg-white"
             }`}

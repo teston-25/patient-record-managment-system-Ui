@@ -11,9 +11,9 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "https://prms-backend-rrdo.onrender.com/",
+        // target: "http://localhost:5000",
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },
