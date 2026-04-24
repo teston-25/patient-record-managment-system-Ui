@@ -7,9 +7,11 @@ export const fetchSummaryReport = createAsyncThunk(
     try {
       return await reportsAPI.getSummaryReport();
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch summary report");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch summary report",
+      );
     }
-  }
+  },
 );
 
 export const fetchAppointmentsByDateRange = createAsyncThunk(
@@ -18,9 +20,11 @@ export const fetchAppointmentsByDateRange = createAsyncThunk(
     try {
       return await reportsAPI.getAppointmentsByDateRange(from, to);
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch appointments");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch appointments",
+      );
     }
-  }
+  },
 );
 
 export const fetchFrequentDiagnoses = createAsyncThunk(
@@ -29,9 +33,11 @@ export const fetchFrequentDiagnoses = createAsyncThunk(
     try {
       return await reportsAPI.getFrequentDiagnoses();
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch frequent diagnoses");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch frequent diagnoses",
+      );
     }
-  }
+  },
 );
 
 const reportSlice = createSlice({
@@ -64,7 +70,7 @@ const reportSlice = createSlice({
       })
       .addCase(fetchAppointmentsByDateRange.fulfilled, (state, action) => {
         state.loading = false;
-        state.appointments = action.payload.appointments; // store only the array
+        state.appointments = action.payload.appointments;
       })
       .addCase(fetchAppointmentsByDateRange.rejected, (state, action) => {
         state.loading = false;
@@ -85,4 +91,4 @@ const reportSlice = createSlice({
   },
 });
 
-export default reportSlice.reducer; 
+export default reportSlice.reducer;

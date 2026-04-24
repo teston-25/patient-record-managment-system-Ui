@@ -16,7 +16,7 @@ export const fetchHistory = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
-  }
+  },
 );
 
 // Add new history entry for a patient
@@ -24,12 +24,15 @@ export const createHistory = createAsyncThunk(
   "history/createHistory",
   async ({ patientId, data }, { rejectWithValue }) => {
     try {
-      const res = await addMedicalHistory(patientId, data);
+      const res = await addMedicalHistory(patientId, {
+        ...data,
+        patient: patientId,
+      });
       return res.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
-  }
+  },
 );
 
 // Update a history entry
@@ -42,7 +45,7 @@ export const editHistory = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
-  }
+  },
 );
 
 // Delete a history entry
@@ -55,7 +58,7 @@ export const removeHistory = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
-  }
+  },
 );
 
 const historySlice = createSlice({
@@ -131,4 +134,4 @@ const historySlice = createSlice({
 });
 
 export const { clearHistoryState } = historySlice.actions;
-export default historySlice.reducer; 
+export default historySlice.reducer;

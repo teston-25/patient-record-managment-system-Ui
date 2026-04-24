@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile, updateProfile } from "./settingSlice";
 import Spinner from "../../../components/common/Spinner";
 import ErrorMessage from "../../../components/common/ErrorMessage";
-import { FaUser, FaLock, FaSave, FaEye, FaEyeSlash, FaUserCircle } from "react-icons/fa";
+import {
+  FaUser,
+  FaLock,
+  FaSave,
+  FaEye,
+  FaEyeSlash,
+  FaUserCircle,
+} from "react-icons/fa";
 import toast from "react-hot-toast";
 
 function getUserFromLocalStorage() {
@@ -18,10 +25,11 @@ function getUserFromLocalStorage() {
 
 function Settings() {
   const dispatch = useDispatch();
-  const { profile, loading, error } = useSelector((state) => state.settings || {});
-  // Memoize localUser so it doesn't change on every render
+  const { profile, loading, error } = useSelector(
+    (state) => state.settings || {},
+  );
   const localUser = useMemo(getUserFromLocalStorage, []);
-  // Profile form state
+
   const [profileForm, setProfileForm] = useState({
     firstName: localUser?.fullName?.split(" ")[0] || "",
     lastName: localUser?.fullName?.split(" ").slice(1).join(" ") || "",
@@ -30,71 +38,71 @@ function Settings() {
     role: localUser?.role || "",
     status: "",
     createdAt: "",
-    updatedAt: ""
+    updatedAt: "",
   });
+
   const [profileLoading, setProfileLoading] = useState(false);
-  // Password form state
   const [passwordForm, setPasswordForm] = useState({
     oldPassword: "",
     password: "",
-    confirm: ""
+    confirm: "",
   });
   const [showPasswords, setShowPasswords] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
-  // Load profile from Redux or fallback to localStorage
   useEffect(() => {
-    // Only run once on mount
     if (!profile && localUser?.id) {
       dispatch(fetchProfile(localUser.id));
     }
-    // eslint-disable-next-line
-  }, []);
+  }, [dispatch, localUser, profile]);
 
   useEffect(() => {
     if (profile) {
       setProfileForm({
         firstName: profile.firstName || profile.fullName?.split(" ")[0] || "",
-        lastName: profile.lastName || profile.fullName?.split(" ").slice(1).join(" ") || "",
+        lastName:
+          profile.lastName ||
+          profile.fullName?.split(" ").slice(1).join(" ") ||
+          "",
         fullName: profile.fullName || "",
         email: profile.email || "",
         role: profile.role || localUser?.role || "",
         status: profile.status || "",
         createdAt: profile.createdAt || "",
-        updatedAt: profile.updatedAt || ""
+        updatedAt: profile.updatedAt || "",
       });
     }
   }, [profile, localUser]);
 
-  // Profile form handlers
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfileForm((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setProfileLoading(true);
     try {
       const submitData = {
         ...profileForm,
-        fullName: profileForm.firstName && profileForm.lastName
-          ? `${profileForm.firstName} ${profileForm.lastName}`.trim()
-          : profileForm.fullName
+        fullName:
+          profileForm.firstName && profileForm.lastName
+            ? `${profileForm.firstName} ${profileForm.lastName}`.trim()
+            : profileForm.fullName,
       };
       await dispatch(updateProfile(submitData));
-      toast.success("Profile updated successfully");  
-      
+      toast.success("Profile updated successfully");
     } finally {
       setProfileLoading(false);
     }
   };
 
-  // Password form handlers
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordForm((prev) => ({ ...prev, [name]: value }));
   };
+
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     setPasswordError("");
@@ -108,11 +116,13 @@ function Settings() {
     }
     setPasswordLoading(true);
     try {
-      await dispatch(updateProfile({
-        ...profileForm,
-        password: passwordForm.password,
-        oldPassword: passwordForm.oldPassword
-      }));
+      await dispatch(
+        updateProfile({
+          ...profileForm,
+          password: passwordForm.password,
+          oldPassword: passwordForm.oldPassword,
+        }),
+      );
       toast.success("Password updated successfully");
       setPasswordForm({ oldPassword: "", password: "", confirm: "" });
     } finally {
@@ -120,169 +130,175 @@ function Settings() {
     }
   };
 
-  // Responsive card layout
+  if (loading && !profile) return <Spinner />;
+  if (error) return <ErrorMessage message={error} />;
+
   return (
-    <div className="p-4 sm:p-6 max-w-screen-md mx-auto">
-      <h1 className="text-3xl font-semibold text-gray-800 mb-6">Profile & Settings</h1>
-      <p className="text-gray-500 mb-8">Manage your account profile and password</p>
-      {loading && <Spinner />}
-      {error && <ErrorMessage message={error} />}
-      <div className="space-y-6">
-        {/* Profile Overview Card */}
-        <div className="bg-white rounded-2xl shadow p-6 border border-gray-100 flex flex-col sm:flex-row items-center gap-6">
-          <div className="flex items-center justify-center bg-indigo-500 rounded-full w-16 h-16">
-            <FaUserCircle className="text-white text-4xl" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-gray-800 truncate">{profileForm.fullName || `${profileForm.firstName} ${profileForm.lastName}`.trim() || 'Your Profile'}</h2>
-            <p className="text-gray-500 mt-1">{profileForm.role ? profileForm.role.charAt(0).toUpperCase() + profileForm.role.slice(1) : 'User'}</p>
-            <div className="flex flex-wrap gap-2 mt-2 text-xs text-gray-400">
-              {profileForm.createdAt && <span>Created: {new Date(profileForm.createdAt).toLocaleDateString()}</span>}
-              {profileForm.updatedAt && <span>Updated: {new Date(profileForm.updatedAt).toLocaleDateString()}</span>}
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="max-w-2xl w-full">
+        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
+          {/* Header Section */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="flex items-center justify-center bg-gradient-to-br from-[#007c80] to-teal-600 rounded-full w-20 h-20 mb-4 shadow-md">
+              <FaUserCircle className="text-white text-5xl" />
             </div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Profile Settings
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">
+              Manage your account information
+            </p>
           </div>
-        </div>
 
-        {/* Profile Edit Card */}
-        <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
-          <div className="flex items-center gap-3 mb-4">
-            <FaUser className="text-indigo-500 text-lg" />
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-700">Profile Information</h2>
-            {profileLoading && <Spinner />}
-          </div>
-          <form onSubmit={handleProfileSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-8">
+            {/* Profile Section */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                value={profileForm.firstName}
-                onChange={handleProfileChange}
-                className="w-full p-2 border rounded-lg"
-                required
-                placeholder="Enter your first name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                value={profileForm.lastName}
-                onChange={handleProfileChange}
-                className="w-full p-2 border rounded-lg"
-                required
-                placeholder="Enter your last name"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={profileForm.email}
-                onChange={handleProfileChange}
-                className="w-full p-2 border rounded-lg"
-                required
-                placeholder="Enter your email"
-              />
-            </div>
-            <div className="sm:col-span-2 flex flex-wrap gap-4 mt-2">
-              <div className="flex-1 min-w-[120px]">
-                <label className="block text-xs font-medium text-gray-500 mb-1">Role</label>
-                <input
-                  type="text"
-                  value={profileForm.role ? profileForm.role.charAt(0).toUpperCase() + profileForm.role.slice(1) : 'N/A'}
-                  className="w-full p-2 border rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
-                  readOnly
-                />
+              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-teal-100">
+                <FaUser className="text-[#007c80] text-sm" />
+                <h3 className="text-md font-semibold text-gray-700">
+                  Profile Information
+                </h3>
+                {profileLoading && <Spinner />}
               </div>
-              <div className="flex-1 min-w-[120px]">
-                <label className="block text-xs font-medium text-gray-500 mb-1">Status</label>
-                <input
-                  type="text"
-                  value={profileForm.status ? profileForm.status.charAt(0).toUpperCase() + profileForm.status.slice(1) : 'Active'}
-                  className="w-full p-2 border rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
-                  readOnly
-                />
-              </div>
-            </div>
-            <div className="sm:col-span-2 mt-4">
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-all duration-200 shadow-md flex items-center justify-center gap-2"
-                disabled={profileLoading}
-              >
-                <FaSave className="inline-block" />
-                Save Profile
-              </button>
-            </div>
-          </form>
-        </div>
 
-        {/* Password Change Card */}
-        <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
-          <div className="flex items-center gap-3 mb-4">
-            <FaLock className="text-indigo-500 text-lg" />
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-700">Password Settings</h2>
-            {passwordLoading && <Spinner />}
-          </div>
-          <form onSubmit={handlePasswordSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-              <div className="relative">
+              <form onSubmit={handleProfileSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={profileForm.firstName}
+                    onChange={handleProfileChange}
+                    className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={profileForm.lastName}
+                    onChange={handleProfileChange}
+                    className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    required
+                  />
+                </div>
+
                 <input
-                  type={showPasswords ? 'text' : 'password'}
-                  name="oldPassword"
-                  value={passwordForm.oldPassword}
-                  onChange={handlePasswordChange}
-                  className="w-full p-2 border rounded-lg pr-10"
+                  type="email"
+                  name="email"
+                  placeholder="Email Address"
+                  value={profileForm.email}
+                  onChange={handleProfileChange}
+                  className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
                   required
                 />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    value={
+                      profileForm.role
+                        ? profileForm.role.charAt(0).toUpperCase() +
+                          profileForm.role.slice(1)
+                        : "N/A"
+                    }
+                    className="w-full px-4 py-2 border border-gray-100 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
+                    readOnly
+                  />
+                  <input
+                    type="text"
+                    value={
+                      profileForm.status
+                        ? profileForm.status.charAt(0).toUpperCase() +
+                          profileForm.status.slice(1)
+                        : "Active"
+                    }
+                    className="w-full px-4 py-2 border border-gray-100 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
+                    readOnly
+                  />
+                </div>
+
                 <button
-                  type="button"
-                  onClick={() => setShowPasswords((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  tabIndex={-1}
+                  type="submit"
+                  className="w-full bg-[#007c80] hover:bg-teal-700 text-white font-semibold py-2.5 rounded-md transition duration-200 flex items-center justify-center gap-2 shadow-sm"
+                  disabled={profileLoading}
                 >
-                  {showPasswords ? <FaEyeSlash /> : <FaEye />}
+                  <FaSave className="text-sm" />
+                  Save Profile
                 </button>
+              </form>
+            </div>
+
+            {/* Password Section */}
+            <div>
+              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-teal-100">
+                <FaLock className="text-[#007c80] text-sm" />
+                <h3 className="text-md font-semibold text-gray-700">
+                  Change Password
+                </h3>
+                {passwordLoading && <Spinner />}
               </div>
+
+              <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                <div className="relative">
+                  <input
+                    type={showPasswords ? "text" : "password"}
+                    name="oldPassword"
+                    placeholder="Current Password"
+                    value={passwordForm.oldPassword}
+                    onChange={handlePasswordChange}
+                    className="w-full px-4 py-2 pr-10 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswords((v) => !v)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#007c80]"
+                  >
+                    {showPasswords ? (
+                      <FaEyeSlash size={16} />
+                    ) : (
+                      <FaEye size={16} />
+                    )}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input
+                    type={showPasswords ? "text" : "password"}
+                    name="password"
+                    placeholder="New Password"
+                    value={passwordForm.password}
+                    onChange={handlePasswordChange}
+                    className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    required
+                  />
+                  <input
+                    type={showPasswords ? "text" : "password"}
+                    name="confirm"
+                    placeholder="Confirm Password"
+                    value={passwordForm.confirm}
+                    onChange={handlePasswordChange}
+                    className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    required
+                  />
+                </div>
+
+                {passwordError && (
+                  <p className="text-red-500 text-xs">{passwordError}</p>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full bg-[#007c80] hover:bg-teal-700 text-white font-semibold py-2.5 rounded-md transition duration-200 flex items-center justify-center gap-2 shadow-sm"
+                  disabled={passwordLoading}
+                >
+                  <FaLock className="text-sm" />
+                  Update Password
+                </button>
+              </form>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-              <input
-                type={showPasswords ? 'text' : 'password'}
-                name="password"
-                value={passwordForm.password}
-                onChange={handlePasswordChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-              <input
-                type={showPasswords ? 'text' : 'password'}
-                name="confirm"
-                value={passwordForm.confirm}
-                onChange={handlePasswordChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-            {passwordError && <div className="sm:col-span-2 text-red-500 text-sm">{passwordError}</div>}
-            <div className="sm:col-span-2 mt-4">
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-all duration-200 shadow-md flex items-center justify-center gap-2"
-                disabled={passwordLoading}
-              >
-                <FaLock className="inline-block" />
-                Change Password
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -290,4 +306,3 @@ function Settings() {
 }
 
 export default Settings;
-

@@ -27,7 +27,10 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
   const [editId, setEditId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [showInvoiceForm, setShowInvoiceForm] = useState(false);
-  const [invoiceContext, setInvoiceContext] = useState({ patient: null, medicalHistory: null });
+  const [invoiceContext, setInvoiceContext] = useState({
+    patient: null,
+    medicalHistory: null,
+  });
 
   // Determine patientId to use
   const effectivePatientId = patient?._id || patientId;
@@ -77,15 +80,17 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
         }
       });
     } else {
-      dispatch(createHistory({ patientId: effectivePatientId, data })).then((res) => {
-        if (!res.error) {
-          toast.success("Medical history added successfully");
-          setShowForm(false);
-          setForm(initialForm);
-        } else {
-          toast.error(res.error.message || "Failed to add entry");
-        }
-      });
+      dispatch(createHistory({ patientId: effectivePatientId, data })).then(
+        (res) => {
+          if (!res.error) {
+            toast.success("Medical history added successfully");
+            setShowForm(false);
+            setForm(initialForm);
+          } else {
+            toast.error(res.error.message || "Failed to add entry");
+          }
+        },
+      );
     }
   };
 
@@ -102,14 +107,21 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
   };
 
   const handleDelete = (id) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this medical history entry?",
+    );
+
+    if (!isConfirmed) return;
+
     setDeleteId(id);
+
     dispatch(removeHistory({ historyId: id })).then((res) => {
+      setDeleteId(null);
+
       if (!res.error) {
         toast.success("Medical history deleted successfully");
-        setDeleteId(null);
       } else {
         toast.error(res.error.message || "Failed to delete entry");
-        setDeleteId(null);
       }
     });
   };
@@ -127,10 +139,15 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white rounded-t-2xl">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-800">Medical History</h2>
+              <h2 className="text-2xl font-semibold text-gray-800">
+                Medical History
+              </h2>
               {patient?.firstName || patient?.lastName ? (
                 <p className="text-gray-500 text-sm">
-                  Patient: <span className="font-semibold text-gray-700">{patient.firstName} {patient.lastName}</span>
+                  Patient:{" "}
+                  <span className="font-semibold text-gray-700">
+                    {patient.firstName} {patient.lastName}
+                  </span>
                 </p>
               ) : null}
             </div>
@@ -146,7 +163,6 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
           {/* Content */}
           <div className="p-6 bg-white rounded-b-2xl">
             {loading && <div className="text-center py-4">Loading...</div>}
-            {error && <div className="text-center text-red-500 py-2">{error}</div>}
 
             {/* List of history entries */}
             {!loading && !showForm && (
@@ -158,7 +174,9 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
                   Add New Entry
                 </button>
                 {list.length === 0 ? (
-                  <div className="text-gray-400 text-center">No medical history found.</div>
+                  <div className="text-gray-400 text-center">
+                    No medical history found.
+                  </div>
                 ) : (
                   <div className="space-y-4">
                     {list.map((entry) => (
@@ -167,15 +185,22 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
                         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border border-gray-100 rounded-xl p-4 bg-gray-50"
                       >
                         <div>
-                          <div className="font-semibold text-lg text-gray-800">{entry.diagnosis}</div>
-                          <div className="text-sm text-gray-600">{entry.treatment}</div>
+                          <div className="font-semibold text-lg text-gray-800">
+                            {entry.diagnosis}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {entry.treatment}
+                          </div>
                           <div className="text-xs text-gray-500 mt-1">
-                            Medications: {entry.medications?.join(", ") || "N/A"}
+                            Medications:{" "}
+                            {entry.medications?.join(", ") || "N/A"}
                           </div>
                           <div className="text-xs text-gray-500">
-                            Date: {entry.date ? new Date(entry.date).toLocaleDateString() : "N/A"}
+                            Date:{" "}
+                            {entry.date
+                              ? new Date(entry.date).toLocaleDateString()
+                              : "N/A"}
                           </div>
-                          <div className="text-xs text-gray-500">Reason: {entry.reason || "-"}</div>
                         </div>
                         <div className="flex flex-col xs:flex-row gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
                           <button
@@ -193,7 +218,10 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
                           </button>
                           <button
                             onClick={() => {
-                              setInvoiceContext({ patient: effectivePatientId, medicalHistory: entry._id });
+                              setInvoiceContext({
+                                patient: effectivePatientId,
+                                medicalHistory: entry._id,
+                              });
                               setShowInvoiceForm(true);
                             }}
                             className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm w-full xs:w-auto"
@@ -218,7 +246,9 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
                   {editId ? "Edit Entry" : "Add Medical History"}
                 </h3>
                 <div className="mb-3">
-                  <label className="block text-sm font-medium mb-1 text-gray-700">Diagnosis</label>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">
+                    Diagnosis
+                  </label>
                   <input
                     type="text"
                     name="diagnosis"
@@ -229,7 +259,9 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="block text-sm font-medium mb-1 text-gray-700">Treatment</label>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">
+                    Treatment
+                  </label>
                   <input
                     type="text"
                     name="treatment"
@@ -240,7 +272,9 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="block text-sm font-medium mb-1 text-gray-700">Medications (comma separated)</label>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">
+                    Medications (comma separated)
+                  </label>
                   <input
                     type="text"
                     name="medications"
@@ -250,22 +284,13 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="block text-sm font-medium mb-1 text-gray-700">Date</label>
+                  <label className="block text-sm font-medium mb-1 text-gray-700">
+                    Date
+                  </label>
                   <input
                     type="date"
                     name="date"
                     value={form.date}
-                    onChange={handleChange}
-                    required
-                    className="w-full border rounded p-2 border-gray-300"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-sm font-medium mb-1 text-gray-700">Reason</label>
-                  <input
-                    type="text"
-                    name="reason"
-                    value={form.reason}
                     onChange={handleChange}
                     required
                     className="w-full border rounded p-2 border-gray-300"
@@ -310,4 +335,4 @@ const MedicalHistoryModal = ({ patient, patientId, onClose }) => {
   );
 };
 
-export default MedicalHistoryModal; 
+export default MedicalHistoryModal;

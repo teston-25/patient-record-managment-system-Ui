@@ -8,9 +8,11 @@ export const fetchProfile = createAsyncThunk(
       const res = await profileAPI.getProfile();
       return res.data.user;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || "Failed to fetch profile");
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch profile",
+      );
     }
-  }
+  },
 );
 
 export const updateProfile = createAsyncThunk(
@@ -20,9 +22,11 @@ export const updateProfile = createAsyncThunk(
       const res = await profileAPI.updateProfile(data);
       return res.data.user;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || "Failed to update profile");
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to update profile",
+      );
     }
-  }
+  },
 );
 
 const settingSlice = createSlice({
@@ -62,4 +66,4 @@ const settingSlice = createSlice({
   },
 });
 
-export default settingSlice.reducer; 
+export default settingSlice.reducer;

@@ -16,7 +16,7 @@ export const fetchUserById = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
-  }
+  },
 );
 
 export const updateUser = createAsyncThunk(
@@ -28,7 +28,7 @@ export const updateUser = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
-  }
+  },
 );
 
 export const deleteUser = createAsyncThunk(
@@ -40,7 +40,7 @@ export const deleteUser = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
-  }
+  },
 );
 
 export const addNewUser = createAsyncThunk(
@@ -49,7 +49,7 @@ export const addNewUser = createAsyncThunk(
     const response = await authAPI.signup(userData);
     console.log("response addNewUser:", response);
     return response;
-  }
+  },
 );
 
 const userSlice = createSlice({
@@ -89,14 +89,16 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         const updated = action.payload.user || action.payload;
-        const existingUser = state.users.find((user) => user._id === updated._id);
+        const existingUser = state.users.find(
+          (user) => user._id === updated._id,
+        );
         if (existingUser) {
           existingUser.role = updated.role;
           existingUser.active = updated.active;
         }
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
-        state.users = state.users.filter((user) => user.id !== action.payload);
+        state.users = state.users.filter((user) => user._id !== action.payload);
       });
   },
 });
@@ -117,7 +119,7 @@ export const selectFilteredUsers = (state) => {
     filteredUsers = filteredUsers.filter(
       (user) =>
         user.fullName.toLowerCase().includes(term) ||
-        user.email.toLowerCase().includes(term)
+        user.email.toLowerCase().includes(term),
     );
   }
 

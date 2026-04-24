@@ -6,10 +6,10 @@ import {
   PhoneIcon,
   ClockIcon,
 } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../users/userSlice";
 import { selectDoctorsWithState } from "../../../components/common/selectors";
+import toast from "react-hot-toast";
 
 const AppointmentForm = ({
   appointment,
@@ -19,10 +19,10 @@ const AppointmentForm = ({
   loading = false,
   fetchDoctorsOnMount = true,
   isAddMode = false, // new prop
-  role = 'admin',
+  role = "admin",
 }) => {
   const { user } = useSelector((state) => state.auth);
-  const userRole = user?.role || 'admin';
+  const userRole = user?.role || "admin";
   const dispatch = useDispatch();
   const {
     register,
@@ -45,7 +45,6 @@ const AppointmentForm = ({
       status: "pending",
     },
   });
-  const navigate = useNavigate();
 
   const email = watch("patient.email");
   const phone = watch("patient.phone");
@@ -88,10 +87,15 @@ const AppointmentForm = ({
   const validateContactInfo = () => {
     return email || phone ? true : "Either email or phone number is required";
   };
+
+  if (validateContactInfo() !== true) {
+    return toast.error(validateContactInfo());
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Patient Information */}
-      {role !== 'doctor' && (
+      {role !== "doctor" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {!isAddMode && !isStatusOnly && !isViewMode && (
             <>
@@ -176,12 +180,14 @@ const AppointmentForm = ({
           </label>
           {isViewMode || isStatusOnly ? (
             <div className="p-2 border rounded-lg bg-gray-100">
-              {watch("date") ? new Date(watch("date")).toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-              }) : "Not specified"}
+              {watch("date")
+                ? new Date(watch("date")).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "Not specified"}
             </div>
           ) : (
             <div className="relative">
@@ -203,10 +209,15 @@ const AppointmentForm = ({
           </label>
           {isViewMode || isStatusOnly ? (
             <div className="p-2 border rounded-lg bg-gray-100">
-              {watch("time") ? new Date(`2000-01-01T${watch("time")}`).toLocaleTimeString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit"
-              }) : "Not specified"}
+              {watch("time")
+                ? new Date(`2000-01-01T${watch("time")}`).toLocaleTimeString(
+                    "en-US",
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    },
+                  )
+                : "Not specified"}
             </div>
           ) : (
             <div className="relative">
@@ -221,14 +232,16 @@ const AppointmentForm = ({
                   errors?.time ? "border-red-500" : ""
                 }`}
               />
-              <small className="text-gray-500">Working hours: 2:00 AM to 11:00 AM (Ethiopia time)</small>
+              <small className="text-gray-500">
+                Working hours: 2:00 AM to 11:00 AM (Ethiopia time)
+              </small>
             </div>
           )}
         </div>
       </div>
 
       {/* Doctor and Reason */}
-      {role !== 'doctor' && !isStatusOnly && !isViewMode ? (
+      {role !== "doctor" && !isStatusOnly && !isViewMode ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -236,10 +249,9 @@ const AppointmentForm = ({
             </label>
             {isViewMode ? (
               <div className="p-2 border rounded-lg bg-gray-100">
-                {appointment?.assignedTo?.fullName 
+                {appointment?.assignedTo?.fullName
                   ? `Dr. ${appointment.assignedTo.fullName}`
-                  : "Not assigned"
-                }
+                  : "Not assigned"}
               </div>
             ) : (
               <>
@@ -306,7 +318,8 @@ const AppointmentForm = ({
             } ${isViewMode ? "bg-gray-100" : ""}`}
             disabled={
               isViewMode ||
-              (!isStatusOnly && (role === 'doctor' || role === 'admin' || role === 'staff'))
+              (!isStatusOnly &&
+                (role === "doctor" || role === "admin" || role === "staff"))
             }
           >
             <option value="pending">Scheduled</option>
