@@ -1,15 +1,15 @@
-import axios from "../services/axios";
+import api from "../services/axios";
 
 // Get current user's profile
 export const getProfile = async () => {
-  const res = await axios.get("/api/profile/me");
+  const res = await api.get("/profile/me");
   return res.data;
 };
 
 // Update current user's profile
 export const updateProfile = async (data) => {
-  const res = await axios.patch("/api/profile/me", data);
+  const res = await api.patch("/profile/me", data);
   return res.data;
 };
 
-export default { getProfile, updateProfile }; 
+export default { getProfile, updateProfile };

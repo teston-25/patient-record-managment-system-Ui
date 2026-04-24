@@ -13,8 +13,8 @@ import {
 import { fetchUsers, deleteUser, updateUser } from "./userSlice";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Menu } from '@headlessui/react';
-  
+import { Menu } from "@headlessui/react";
+
 const UsersList = () => {
   const dispatch = useDispatch();
   const { users, status } = useSelector((state) => state.users);
@@ -187,12 +187,14 @@ const UsersList = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       {user.fullName}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {user.email}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap capitalize">
                       {editUserId === user._id ? (
                         <select
                           value={editRole}
-                          onChange={e => setEditRole(e.target.value)}
+                          onChange={(e) => setEditRole(e.target.value)}
                           className="border rounded px-2 py-1 bg-white"
                         >
                           <option value="admin">Admin</option>
@@ -208,14 +210,16 @@ const UsersList = () => {
                       {editUserId === user._id ? (
                         <select
                           value={editStatus}
-                          onChange={e => setEditStatus(e.target.value)}
+                          onChange={(e) => setEditStatus(e.target.value)}
                           className="border rounded px-2 py-1 bg-white"
                         >
                           <option value="active">Active</option>
                           <option value="inactive">Inactive</option>
                         </select>
                       ) : (
-                        <span className={`px-2 py-1 rounded-full text-xs ${user.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${user.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+                        >
                           {user.active ? "Active" : "Inactive"}
                         </span>
                       )}
@@ -227,21 +231,28 @@ const UsersList = () => {
                             className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
                             onClick={async () => {
                               try {
-                                const result = await dispatch(updateUser({
-                                  id: user._id,
-                                  updatedData: {
-                                    role: editRole,
-                                    active: editStatus === "active"
-                                  }
-                                }));
+                                const result = await dispatch(
+                                  updateUser({
+                                    id: user._id,
+                                    updatedData: {
+                                      role: editRole,
+                                      active: editStatus === "active",
+                                    },
+                                  }),
+                                );
                                 if (updateUser.fulfilled.match(result)) {
                                   toast.success("User updated successfully!");
                                   setEditUserId(null);
                                 } else {
-                                  toast.error(result.error?.message || "Failed to update user.");
+                                  toast.error(
+                                    result.error?.message ||
+                                      "Failed to update user.",
+                                  );
                                 }
                               } catch (err) {
-                                toast.error("Failed to update user.");
+                                toast.error(
+                                  err.message || "Failed to update user.",
+                                );
                               }
                             }}
                           >
@@ -266,7 +277,10 @@ const UsersList = () => {
                           Edit
                         </button>
                       )}
-                      <Menu as="div" className="relative inline-block text-left">
+                      <Menu
+                        as="div"
+                        className="relative inline-block text-left"
+                      >
                         <Menu.Button className="flex items-center p-2 rounded-full hover:bg-gray-100">
                           <EllipsisVerticalIcon className="h-5 w-5 text-gray-600" />
                         </Menu.Button>
@@ -277,7 +291,7 @@ const UsersList = () => {
                                 <Link
                                   to={`/admin/users/view/${user._id}`}
                                   onClick={() => setSelectedUser(user)}
-                                  className={`block px-4 py-2 text-sm text-gray-700 ${active ? 'bg-gray-100' : ''}`}
+                                  className={`block px-4 py-2 text-sm text-gray-700 ${active ? "bg-gray-100" : ""}`}
                                 >
                                   View
                                 </Link>
@@ -287,7 +301,7 @@ const UsersList = () => {
                               {({ active }) => (
                                 <button
                                   onClick={() => handleDelete(user._id)}
-                                  className={`block w-full text-left px-4 py-2 text-sm text-red-600 ${active ? 'bg-gray-100' : ''}`}
+                                  className={`block w-full text-left px-4 py-2 text-sm text-red-600 ${active ? "bg-gray-100" : ""}`}
                                 >
                                   Delete
                                 </button>
@@ -336,7 +350,7 @@ const UsersList = () => {
                           <Link
                             to={`/admin/users/view/${user._id}`}
                             onClick={() => setSelectedUser(user)}
-                            className={`block px-4 py-2 text-sm text-gray-700 ${active ? 'bg-gray-100' : ''}`}
+                            className={`block px-4 py-2 text-sm text-gray-700 ${active ? "bg-gray-100" : ""}`}
                           >
                             View
                           </Link>
@@ -348,9 +362,11 @@ const UsersList = () => {
                             onClick={() => {
                               setEditUserId(user._id);
                               setEditRole(user.role);
-                              setEditStatus(user.active ? "active" : "inactive");
+                              setEditStatus(
+                                user.active ? "active" : "inactive",
+                              );
                             }}
-                            className={`block w-full text-left px-4 py-2 text-sm text-yellow-600 ${active ? 'bg-gray-100' : ''}`}
+                            className={`block w-full text-left px-4 py-2 text-sm text-yellow-600 ${active ? "bg-gray-100" : ""}`}
                           >
                             Edit
                           </button>
@@ -360,7 +376,7 @@ const UsersList = () => {
                         {({ active }) => (
                           <button
                             onClick={() => handleDelete(user._id)}
-                            className={`block w-full text-left px-4 py-2 text-sm text-red-600 ${active ? 'bg-gray-100' : ''}`}
+                            className={`block w-full text-left px-4 py-2 text-sm text-red-600 ${active ? "bg-gray-100" : ""}`}
                           >
                             Delete
                           </button>
@@ -374,10 +390,12 @@ const UsersList = () => {
               {editUserId === user._id && (
                 <div className="mt-3 bg-gray-50 p-3 rounded-lg border">
                   <div className="mb-2">
-                    <label className="block text-xs font-medium mb-1">Role</label>
+                    <label className="block text-xs font-medium mb-1">
+                      Role
+                    </label>
                     <select
                       value={editRole}
-                      onChange={e => setEditRole(e.target.value)}
+                      onChange={(e) => setEditRole(e.target.value)}
                       className="border rounded px-2 py-1 bg-white w-full"
                     >
                       <option value="admin">Admin</option>
@@ -387,10 +405,12 @@ const UsersList = () => {
                     </select>
                   </div>
                   <div className="mb-2">
-                    <label className="block text-xs font-medium mb-1">Status</label>
+                    <label className="block text-xs font-medium mb-1">
+                      Status
+                    </label>
                     <select
                       value={editStatus}
-                      onChange={e => setEditStatus(e.target.value)}
+                      onChange={(e) => setEditStatus(e.target.value)}
                       className="border rounded px-2 py-1 bg-white w-full"
                     >
                       <option value="active">Active</option>
@@ -402,21 +422,25 @@ const UsersList = () => {
                       className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 w-full"
                       onClick={async () => {
                         try {
-                          const result = await dispatch(updateUser({
-                            id: user._id,
-                            updatedData: {
-                              role: editRole,
-                              active: editStatus === "active"
-                            }
-                          }));
+                          const result = await dispatch(
+                            updateUser({
+                              id: user._id,
+                              updatedData: {
+                                role: editRole,
+                                active: editStatus === "active",
+                              },
+                            }),
+                          );
                           if (updateUser.fulfilled.match(result)) {
                             toast.success("User updated successfully!");
                             setEditUserId(null);
                           } else {
-                            toast.error(result.error?.message || "Failed to update user.");
+                            toast.error(
+                              result.error?.message || "Failed to update user.",
+                            );
                           }
                         } catch (err) {
-                          toast.error("Failed to update user.");
+                          toast.error(err.message || "Failed to update user.");
                         }
                       }}
                     >

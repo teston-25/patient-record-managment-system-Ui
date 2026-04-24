@@ -13,8 +13,9 @@ const FILTERS = [
 
 const InvoiceList = () => {
   const dispatch = useDispatch();
-  const { list, loading, error, filter, markPaidLoading, markPaidError } =
-    useSelector((state) => state.invoices);
+  const { list, loading, error, filter, markPaidError } = useSelector(
+    (state) => state.invoices,
+  );
   const invoices = Array.isArray(list) ? list : list?.data?.data || [];
   const [expanded, setExpanded] = useState(null);
   const [markingId, setMarkingId] = useState(null);
@@ -46,7 +47,7 @@ const InvoiceList = () => {
         toast.error(resultAction.payload || "Failed to mark as paid");
       }
     } catch (err) {
-      toast.error("Failed to mark as paid");
+      toast.error(err.message || "An error occurred");
     } finally {
       setMarkingId(null);
     }

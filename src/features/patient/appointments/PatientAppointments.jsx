@@ -2,27 +2,28 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPatientAppointments } from "../dashboard/patientDashboardSlice";
 import Spinner from "../../../components/common/Spinner";
-import api from "../../../services/axios";
+import { getProfile } from "../../../API/profileAPI";
+import toast from "react-hot-toast";
 
 export default function PatientAppointments() {
   const dispatch = useDispatch();
-  const { appointments, loading, error } = useSelector((state) => state.patientAppointments);
+  const { appointments, loading, error } = useSelector(
+    (state) => state.patientAppointments,
+  );
   const [patientId, setPatientId] = useState(null);
   const [openId, setOpenId] = useState(null);
 
   useEffect(() => {
     const fetchProfileAndAppointments = async () => {
       try {
-        const res = await api.get("/profile/me", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        const user = res.data.data.user;
+        const res = await getProfile();
+        const user = res.data.user;
         if (user.patient) {
           setPatientId(user.patient);
           dispatch(fetchPatientAppointments(user.patient));
         }
       } catch (err) {
-        // Optionally handle error
+        toast.error("Failed to fetch profile", err);
       }
     };
     fetchProfileAndAppointments();
@@ -48,7 +49,10 @@ export default function PatientAppointments() {
               <div className="flex justify-between items-center">
                 <div>
                   <div className="font-medium text-gray-800">
-                    {appt.date ? new Date(appt.date).toLocaleDateString() : "No date"} - {appt.reason}
+                    {appt.date
+                      ? new Date(appt.date).toLocaleDateString()
+                      : "No date"}{" "}
+                    - {appt.reason}
                   </div>
                   <div className="text-sm text-gray-500">
                     Status: <span className="font-semibold">{appt.status}</span>
@@ -63,11 +67,24 @@ export default function PatientAppointments() {
               </div>
               {openId === appt._id && (
                 <div className="mt-4 space-y-2 text-gray-700 border-t pt-4">
-                  <div><span className="font-semibold">Doctor:</span> {appt.assignedTo?.fullName || "N/A"}</div>
-                  <div><span className="font-semibold">Reason:</span> {appt.reason}</div>
-                  <div><span className="font-semibold">Status:</span> {appt.status}</div>
-                  <div><span className="font-semibold">Created At:</span> {new Date(appt.createdAt).toLocaleString()}</div>
-                  <div><span className="font-semibold">Updated At:</span> {new Date(appt.updatedAt).toLocaleString()}</div>
+                  <div>
+                    <span className="font-semibold">Doctor:</span>{" "}
+                    {appt.assignedTo?.fullName || "N/A"}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Reason:</span> {appt.reason}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Status:</span> {appt.status}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Created At:</span>{" "}
+                    {new Date(appt.createdAt).toLocaleString()}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Updated At:</span>{" "}
+                    {new Date(appt.updatedAt).toLocaleString()}
+                  </div>
                 </div>
               )}
             </li>
@@ -76,4 +93,4 @@ export default function PatientAppointments() {
       )}
     </div>
   );
-} 
+}

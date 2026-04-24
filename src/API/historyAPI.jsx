@@ -1,17 +1,17 @@
-import axios from "../services/axios";
+import api from "../services/axios";
 
 // Fetch all medical history entries for a patient
 export const getMedicalHistory = (patientId) =>
-  axios.get(`/patients/${patientId}/history`);
+  api.get(`/history/${patientId}`);
 
 // Add a new medical history entry for a patient
 export const addMedicalHistory = (patientId, data) =>
-  axios.post(`/patients/${patientId}/history`, data);
+  api.post(`/history/${patientId}`, data);
 
 // Update a specific medical history entry
 export const updateMedicalHistory = (historyId, data) =>
-  axios.patch(`/history/${historyId}`, data);
+  api.patch(`/history/${historyId}`, data);
 
 // Delete a specific medical history entry
 export const deleteMedicalHistory = (historyId) =>
-  axios.delete(`/history/${historyId}`); 
+  api.delete(`/history/${historyId}`);

@@ -1,17 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../../services/axios";
+import appointmentAPI from "../../../API/appointmentAPI";
 
 // Async thunk to fetch appointments by patient ID
 export const fetchPatientAppointments = createAsyncThunk(
   "patientAppointments/fetchByPatientId",
   async (patientId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/appointments/patient/${patientId}`);
-      return res.data.data.appointments;
+      const res = await appointmentAPI.getAppointmentsByPatient(patientId);
+      return res.data.appointments;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "Failed to fetch appointments");
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch appointments",
+      );
     }
-  }
+  },
 );
 
 const patientAppointmentsSlice = createSlice({
@@ -35,7 +37,7 @@ const patientAppointmentsSlice = createSlice({
       })
       .addCase(fetchPatientAppointments.fulfilled, (state, action) => {
         state.loading = false;
-        state.appointments = action.payload;
+        state.appointments = action.payload.data || action.payload;
       })
       .addCase(fetchPatientAppointments.rejected, (state, action) => {
         state.loading = false;
@@ -50,4 +52,4 @@ export const selectPatientAppointmentById = (state, id) =>
 
 export const { setSidebarOpen } = patientAppointmentsSlice.actions;
 
-export default patientAppointmentsSlice.reducer; 
+export default patientAppointmentsSlice.reducer;

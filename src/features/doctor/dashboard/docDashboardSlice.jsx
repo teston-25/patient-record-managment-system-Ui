@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import appointmentAPI from "../../../API/appointmentAPI";
-import patientAPI from "../../../API/patientAPI";
 
 export const fetchDoctorDashboardStats = createAsyncThunk(
   "docDashboard/fetchStats",
@@ -13,8 +12,18 @@ export const fetchDoctorDashboardStats = createAsyncThunk(
       ]);
 
       // Defensive checks for appointments
-      const allAppointments = appointmentsRes.data?.appointments || appointmentsRes.appointments || appointmentsRes.data || appointmentsRes || [];
-      const todaysAppointments = todaysAppointmentsRes.data?.appointments || todaysAppointmentsRes.appointments || todaysAppointmentsRes.data || todaysAppointmentsRes || [];
+      const allAppointments =
+        appointmentsRes.data?.appointments ||
+        appointmentsRes.appointments ||
+        appointmentsRes.data ||
+        appointmentsRes ||
+        [];
+      const todaysAppointments =
+        todaysAppointmentsRes.data?.appointments ||
+        todaysAppointmentsRes.appointments ||
+        todaysAppointmentsRes.data ||
+        todaysAppointmentsRes ||
+        [];
 
       return {
         totalAppointments: allAppointments.length,
@@ -22,11 +31,13 @@ export const fetchDoctorDashboardStats = createAsyncThunk(
         recentAppointments: allAppointments.slice(-3),
       };
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        "Failed to fetch doctor dashboard stats."
-      );
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch doctor dashboard stats.";
+      return thunkAPI.rejectWithValue(msg);
     }
-  }
+  },
 );
 
 const docDashboardSlice = createSlice({

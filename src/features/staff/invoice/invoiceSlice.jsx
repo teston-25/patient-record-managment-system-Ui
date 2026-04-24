@@ -6,14 +6,14 @@ export const fetchInvoices = createAsyncThunk(
   "invoices/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await invoiceAPI.getInvoices(); 
+      const data = await invoiceAPI.getInvoices();
       return data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch invoices"
+        error.response?.data?.message || "Failed to fetch invoices",
       );
     }
-  }
+  },
 );
 
 // Async thunk to mark invoice as paid
@@ -25,10 +25,10 @@ export const markInvoiceAsPaid = createAsyncThunk(
       return updated;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to mark invoice as paid"
+        error.response?.data?.message || "Failed to mark invoice as paid",
       );
     }
-  }
+  },
 );
 
 const invoiceSlice = createSlice({
@@ -37,7 +37,7 @@ const invoiceSlice = createSlice({
     list: [],
     loading: false,
     error: null,
-    filter: "pending", // 'pending', 'paid', 'all'
+    filter: "all", // 'pending', 'paid', 'all'
     markPaidLoading: false,
     markPaidError: null,
   },
@@ -67,11 +67,8 @@ const invoiceSlice = createSlice({
       })
       .addCase(markInvoiceAsPaid.fulfilled, (state, action) => {
         state.markPaidLoading = false;
-        // Update the invoice in the list
-        const updated = action.payload;
-        const idx = state.list.findIndex(
-          (inv) => inv._id === updated._id
-        );
+        const updated = action.payload.invoice;
+        const idx = state.list.findIndex((inv) => inv._id === updated._id);
         if (idx !== -1) {
           state.list[idx] = { ...state.list[idx], ...updated };
         }
@@ -84,4 +81,4 @@ const invoiceSlice = createSlice({
 });
 
 export const { setFilter } = invoiceSlice.actions;
-export default invoiceSlice.reducer; 
+export default invoiceSlice.reducer;

@@ -69,10 +69,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-700 flex items-center justify-center relative p-4">
+    <div className="min-h-screen bg-gradient-to-br from-white via-teal-100 to-[#c8ffff] flex items-center justify-center relative p-4">
       <Link
         to="/"
-        className="absolute top-6 right-6 text-white text-2xl hover:text-gray-200 transition"
+        className="absolute top-6 right-6 text-[#007c80] text-2xl hover:text-teal-700 transition"
         title="Back to Home"
       >
         <FaHome size={24} />
@@ -83,9 +83,12 @@ export default function Login() {
         buttonText="Log In"
         onSubmit={handleLogin}
         footer={
-          <p className="text-sm mt-4 text-center text-white">
+          <p className="text-sm mt-4 text-center text-[#0f5d5f]">
             Don't have an account?{" "}
-            <Link to="/signup" className="font-semibold hover:underline">
+            <Link
+              to="/signup"
+              className="font-semibold text-[#007c80] hover:text-teal-700 hover:underline"
+            >
               Sign up
             </Link>
           </p>
@@ -97,7 +100,7 @@ export default function Login() {
               type="email"
               name="email"
               placeholder="Email"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
               value={formData.email}
               onChange={handleChange}
               required
@@ -110,7 +113,7 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
-              className="w-full px-4 py-2 pr-10 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 pr-10 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
               value={formData.password}
               onChange={handleChange}
               required
@@ -121,18 +124,14 @@ export default function Login() {
               onClick={togglePasswordVisibility}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 transition-colors"
             >
-              {showPassword ? (
-                <FaEyeSlash size={16} />
-              ) : (
-                <FaEye size={16} />
-              )}
+              {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
             </button>
           </div>
 
           <div className="text-right">
             <Link
               to="/forgot-password"
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-[#007c80] hover:text-teal-700 hover:underline"
             >
               Forgot password?
             </Link>

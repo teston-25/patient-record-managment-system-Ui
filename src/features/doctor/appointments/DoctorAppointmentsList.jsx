@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchDoctorAppointments,
-} from "./docAppointmentSlice";
+import { fetchDoctorAppointments } from "./docAppointmentSlice";
 import MedicalHistoryModal from "../../admin/patients/MedicalHistoryModal";
 import toast from "react-hot-toast";
 import appointmentAPI from "../../../API/appointmentAPI";
@@ -28,7 +26,9 @@ function isToday(dateStr) {
 
 const DoctorAppointmentsList = () => {
   const dispatch = useDispatch();
-  const { appointments, loading, error } = useSelector((state) => state.doctorAppointments);
+  const { appointments, loading, error } = useSelector(
+    (state) => state.doctorAppointments,
+  );
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [statusUpdating, setStatusUpdating] = useState({});
@@ -39,9 +39,11 @@ const DoctorAppointmentsList = () => {
   }, [dispatch]);
 
   // Split appointments into today's and others
-  const todaysAppointments = appointments.filter(a => isToday(a.date));
-  const otherAppointments = appointments.filter(a => !isToday(a.date));
-  const displayedAppointments = showAll ? [...todaysAppointments, ...otherAppointments] : todaysAppointments;
+  const todaysAppointments = appointments.filter((a) => isToday(a.date));
+  const otherAppointments = appointments.filter((a) => !isToday(a.date));
+  const displayedAppointments = showAll
+    ? [...todaysAppointments, ...otherAppointments]
+    : todaysAppointments;
 
   // Add stats for dashboard-like cards
   const totalAppointments = appointments.length;
@@ -50,12 +52,22 @@ const DoctorAppointmentsList = () => {
   const handleStatusChange = async (appointmentId, newStatus) => {
     setStatusUpdating((prev) => ({ ...prev, [appointmentId]: true }));
     try {
-      const response = await appointmentAPI.updateAppointmentStatus(appointmentId, newStatus);
-      toast.success(`Status updated to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`);
+      const response = await appointmentAPI.updateAppointmentStatus(
+        appointmentId,
+        newStatus,
+      );
+      toast.success(
+        `Status updated to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`,
+      );
       // Update local state
       dispatch(fetchDoctorAppointments());
+      console.log("Status update response:", response);
     } catch (error) {
-      toast.error(error?.response?.data?.message || error.message || 'Failed to update status');
+      toast.error(
+        error?.response?.data?.message ||
+          error.message ||
+          "Failed to update status",
+      );
     } finally {
       setStatusUpdating((prev) => ({ ...prev, [appointmentId]: false }));
     }
@@ -78,23 +90,34 @@ const DoctorAppointmentsList = () => {
         ];
       case "completed":
       case "cancelled":
-        return [statusOptions.find(opt => opt.value === currentStatus)];
+        return [statusOptions.find((opt) => opt.value === currentStatus)];
       default:
         return statusOptions;
     }
   };
 
-  if (loading) return <div className="py-8"><Spinner /></div>;
+  if (loading)
+    return (
+      <div className="py-8">
+        <Spinner />
+      </div>
+    );
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
   return (
     <div className="p-2 sm:p-4 max-w-5xl mx-auto">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6">My Appointments</h2>
+      <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+        My Appointments
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-600">Today's Appointments</p>
-            <p className="text-2xl font-bold text-gray-900">{todaysAppointmentsCount}</p>
+            <p className="text-sm font-medium text-gray-600">
+              Today's Appointments
+            </p>
+            <p className="text-2xl font-bold text-gray-900">
+              {todaysAppointmentsCount}
+            </p>
           </div>
           <div className="bg-green-500 p-3 rounded-lg">
             <CalendarIcon className="w-6 h-6 text-white" />
@@ -102,8 +125,12 @@ const DoctorAppointmentsList = () => {
         </div>
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-600">All My Appointments</p>
-            <p className="text-2xl font-bold text-gray-900">{totalAppointments}</p>
+            <p className="text-sm font-medium text-gray-600">
+              All My Appointments
+            </p>
+            <p className="text-2xl font-bold text-gray-900">
+              {totalAppointments}
+            </p>
           </div>
           <div className="bg-blue-500 p-3 rounded-lg">
             <CalendarIcon className="w-6 h-6 text-white" />
@@ -128,47 +155,72 @@ const DoctorAppointmentsList = () => {
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">
+                Patient
+              </th>
+              <th className="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+              <th className="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {displayedAppointments.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center py-8 text-gray-400">No appointments found.</td>
+                <td colSpan={4} className="text-center py-8 text-gray-400">
+                  No appointments found.
+                </td>
               </tr>
             ) : (
               displayedAppointments.map((appointment) => (
                 <tr key={appointment._id}>
                   <td className="px-4 py-4 whitespace-nowrap">
-                    {appointment.patient?.firstName} {appointment.patient?.lastName}
+                    {appointment.patient?.firstName}{" "}
+                    {appointment.patient?.lastName}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
-                    {appointment.date ? new Date(appointment.date).toLocaleDateString() : "-"}
+                    {appointment.date
+                      ? new Date(appointment.date).toLocaleDateString()
+                      : "-"}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <select
                       value={appointment.status}
-                      onChange={(e) => handleStatusChange(appointment._id, e.target.value)}
+                      onChange={(e) =>
+                        handleStatusChange(appointment._id, e.target.value)
+                      }
                       className={`border rounded px-2 py-1 focus:outline-none
-                        ${appointment.status === 'pending' ? 'bg-blue-100 text-blue-800' : ''}
-                        ${appointment.status === 'confirmed' ? 'bg-yellow-100 text-yellow-800' : ''}
-                        ${appointment.status === 'completed' ? 'bg-green-100 text-green-800' : ''}
-                        ${appointment.status === 'cancelled' ? 'bg-red-100 text-red-800' : ''}`}
-                      disabled={statusUpdating[appointment._id] || appointment.status === 'completed' || appointment.status === 'cancelled'}
+                        ${appointment.status === "pending" ? "bg-blue-100 text-blue-800" : ""}
+                        ${appointment.status === "confirmed" ? "bg-yellow-100 text-yellow-800" : ""}
+                        ${appointment.status === "completed" ? "bg-green-100 text-green-800" : ""}
+                        ${appointment.status === "cancelled" ? "bg-red-100 text-red-800" : ""}`}
+                      disabled={
+                        statusUpdating[appointment._id] ||
+                        appointment.status === "completed" ||
+                        appointment.status === "cancelled"
+                      }
                     >
-                      {getAllowedStatusOptions(appointment.status).map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
+                      {getAllowedStatusOptions(appointment.status).map(
+                        (opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ),
+                      )}
                     </select>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <button
                       className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
                       onClick={() => {
-                        setSelectedPatientId(appointment.patient?._id || appointment.patient);
+                        setSelectedPatientId(
+                          appointment.patient?._id || appointment.patient,
+                        );
                         setShowHistoryModal(true);
                       }}
                     >
@@ -191,4 +243,4 @@ const DoctorAppointmentsList = () => {
   );
 };
 
-export default DoctorAppointmentsList; 
+export default DoctorAppointmentsList;

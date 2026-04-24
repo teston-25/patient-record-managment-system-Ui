@@ -2,9 +2,9 @@ export default function AuthCard({ title, onSubmit, buttonText, children }) {
   return (
     <form
       onSubmit={onSubmit}
-      className="w-full max-w-md bg-white/90 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-gray-100 text-gray-800"
+      className="w-full max-w-md bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-teal-100 text-slate-800"
     >
-      <h2 className="text-3xl font-bold text-blue-800 text-center mb-6">
+      <h2 className="text-3xl font-bold text-[#007c80] text-center mb-6">
         {title}
       </h2>
 
@@ -12,7 +12,7 @@ export default function AuthCard({ title, onSubmit, buttonText, children }) {
 
       <button
         type="submit"
-        className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-all duration-200 shadow-md"
+        className="w-full mt-6 bg-[#007c80] hover:bg-teal-600 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
       >
         {buttonText}
       </button>

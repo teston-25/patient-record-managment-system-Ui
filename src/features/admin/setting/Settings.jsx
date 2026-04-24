@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile, updateProfile } from "./settingSlice";
 import Spinner from "../../../components/common/Spinner";
@@ -13,29 +13,20 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 
-function getUserFromLocalStorage() {
-  try {
-    const userStr = localStorage.getItem("user");
-    if (!userStr) return null;
-    return JSON.parse(userStr);
-  } catch {
-    return null;
-  }
-}
-
 function Settings() {
   const dispatch = useDispatch();
   const { profile, loading, error } = useSelector(
     (state) => state.settings || {},
   );
-  const localUser = useMemo(getUserFromLocalStorage, []);
+
+  const { user } = useSelector((state) => state.auth);
 
   const [profileForm, setProfileForm] = useState({
-    firstName: localUser?.fullName?.split(" ")[0] || "",
-    lastName: localUser?.fullName?.split(" ").slice(1).join(" ") || "",
-    fullName: localUser?.fullName || "",
+    firstName: "",
+    lastName: "",
+    fullName: "",
     email: "",
-    role: localUser?.role || "",
+    role: "",
     status: "",
     createdAt: "",
     updatedAt: "",
@@ -51,12 +42,14 @@ function Settings() {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
+  // Load profile from Redux only
   useEffect(() => {
-    if (!profile && localUser?.id) {
-      dispatch(fetchProfile(localUser.id));
+    if (user?.id) {
+      dispatch(fetchProfile(user.id));
     }
-  }, [dispatch, localUser, profile]);
+  }, [dispatch, user?.id]);
 
+  // Update form when profile data arrives
   useEffect(() => {
     if (profile) {
       setProfileForm({
@@ -67,19 +60,15 @@ function Settings() {
           "",
         fullName: profile.fullName || "",
         email: profile.email || "",
-        role: profile.role || localUser?.role || "",
+        role: profile.role || "",
         status: profile.status || "",
         createdAt: profile.createdAt || "",
         updatedAt: profile.updatedAt || "",
       });
     }
-  }, [profile, localUser]);
+  }, [profile]);
 
-  const handleProfileChange = (e) => {
-    const { name, value } = e.target;
-    setProfileForm((prev) => ({ ...prev, [name]: value }));
-  };
-
+  // Handle profile update - Redux will handle persistence
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setProfileLoading(true);
@@ -91,13 +80,22 @@ function Settings() {
             ? `${profileForm.firstName} ${profileForm.lastName}`.trim()
             : profileForm.fullName,
       };
-      await dispatch(updateProfile(submitData));
+      await dispatch(updateProfile(submitData)).unwrap();
       toast.success("Profile updated successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to update profile");
     } finally {
       setProfileLoading(false);
     }
   };
 
+  // Profile form handlers
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfileForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Password form handlers
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordForm((prev) => ({ ...prev, [name]: value }));
@@ -130,28 +128,33 @@ function Settings() {
     }
   };
 
-  if (loading && !profile) return <Spinner />;
-  if (error) return <ErrorMessage message={error} />;
+  // Add loading state check
+  if (loading && !profile) {
+    return <Spinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
-        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
-          {/* Header Section */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="flex items-center justify-center bg-gradient-to-br from-[#007c80] to-teal-600 rounded-full w-20 h-20 mb-4 shadow-md">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="flex flex-col items-center mb-6">
+            <div className="flex items-center justify-center bg-gradient-to-br from-[#007c80] to-teal-600 rounded-full w-20 h-20 mb-4">
               <FaUserCircle className="text-white text-5xl" />
             </div>
             <h2 className="text-2xl font-bold text-gray-800">
               Profile Settings
             </h2>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-gray-600 text-sm mt-1">
               Manage your account information
             </p>
           </div>
 
-          <div className="space-y-8">
-            {/* Profile Section */}
+          <div className="space-y-6">
+            {/* Profile Information Section */}
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-teal-100">
                 <FaUser className="text-[#007c80] text-sm" />
@@ -162,65 +165,77 @@ function Settings() {
               </div>
 
               <form onSubmit={handleProfileSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <input
+                      type="text"
+                      name="firstName"
+                      placeholder="First Name"
+                      value={profileForm.firstName}
+                      onChange={handleProfileChange}
+                      className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      name="lastName"
+                      placeholder="Last Name"
+                      value={profileForm.lastName}
+                      onChange={handleProfileChange}
+                      className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
                   <input
-                    type="text"
-                    name="firstName"
-                    placeholder="First Name"
-                    value={profileForm.firstName}
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    value={profileForm.email}
                     onChange={handleProfileChange}
-                    className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Last Name"
-                    value={profileForm.lastName}
-                    onChange={handleProfileChange}
-                    className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
                     required
                   />
                 </div>
 
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address"
-                  value={profileForm.email}
-                  onChange={handleProfileChange}
-                  className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
-                  required
-                />
-
                 <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    value={
-                      profileForm.role
-                        ? profileForm.role.charAt(0).toUpperCase() +
-                          profileForm.role.slice(1)
-                        : "N/A"
-                    }
-                    className="w-full px-4 py-2 border border-gray-100 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                    readOnly
-                  />
-                  <input
-                    type="text"
-                    value={
-                      profileForm.status
-                        ? profileForm.status.charAt(0).toUpperCase() +
-                          profileForm.status.slice(1)
-                        : "Active"
-                    }
-                    className="w-full px-4 py-2 border border-gray-100 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                    readOnly
-                  />
+                  <div>
+                    <input
+                      type="text"
+                      value={
+                        profileForm.role
+                          ? profileForm.role.charAt(0).toUpperCase() +
+                            profileForm.role.slice(1)
+                          : "N/A"
+                      }
+                      className="w-full px-4 py-2 border border-teal-200 rounded-md bg-gray-50 text-gray-600 cursor-not-allowed"
+                      readOnly
+                      placeholder="Role"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      value={
+                        profileForm.status
+                          ? profileForm.status.charAt(0).toUpperCase() +
+                            profileForm.status.slice(1)
+                          : "Active"
+                      }
+                      className="w-full px-4 py-2 border border-teal-200 rounded-md bg-gray-50 text-gray-600 cursor-not-allowed"
+                      readOnly
+                      placeholder="Status"
+                    />
+                  </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-[#007c80] hover:bg-teal-700 text-white font-semibold py-2.5 rounded-md transition duration-200 flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full bg-[#007c80] hover:bg-teal-700 text-white font-semibold py-2 rounded-md transition duration-200 flex items-center justify-center gap-2"
                   disabled={profileLoading}
                 >
                   <FaSave className="text-sm" />
@@ -229,7 +244,7 @@ function Settings() {
               </form>
             </div>
 
-            {/* Password Section */}
+            {/* Password Change Section */}
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-teal-100">
                 <FaLock className="text-[#007c80] text-sm" />
@@ -247,13 +262,13 @@ function Settings() {
                     placeholder="Current Password"
                     value={passwordForm.oldPassword}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-2 pr-10 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-2 pr-10 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPasswords((v) => !v)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#007c80]"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
                   >
                     {showPasswords ? (
                       <FaEyeSlash size={16} />
@@ -263,34 +278,37 @@ function Settings() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
                   <input
                     type={showPasswords ? "text" : "password"}
                     name="password"
                     placeholder="New Password"
                     value={passwordForm.password}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
                     required
                   />
+                </div>
+
+                <div>
                   <input
                     type={showPasswords ? "text" : "password"}
                     name="confirm"
-                    placeholder="Confirm Password"
+                    placeholder="Confirm New Password"
                     value={passwordForm.confirm}
                     onChange={handlePasswordChange}
-                    className="w-full px-4 py-2 border border-teal-100 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
                     required
                   />
                 </div>
 
                 {passwordError && (
-                  <p className="text-red-500 text-xs">{passwordError}</p>
+                  <div className="text-red-500 text-sm">{passwordError}</div>
                 )}
 
                 <button
                   type="submit"
-                  className="w-full bg-[#007c80] hover:bg-teal-700 text-white font-semibold py-2.5 rounded-md transition duration-200 flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full bg-[#007c80] hover:bg-teal-700 text-white font-semibold py-2 rounded-md transition duration-200 flex items-center justify-center gap-2"
                   disabled={passwordLoading}
                 >
                   <FaLock className="text-sm" />

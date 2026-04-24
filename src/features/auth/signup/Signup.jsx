@@ -45,7 +45,7 @@ export default function Signup() {
           user: data.user,
           token: data.token,
           role: data.role,
-        })
+        }),
       );
 
       localStorage.setItem("token", data.token);
@@ -70,10 +70,10 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-700 flex items-center justify-center relative p-4">
+    <div className="min-h-screen bg-gradient-to-br from-white via-teal-100 to-[#ddfbfb] flex items-center justify-center relative p-4">
       <Link
         to="/"
-        className="absolute top-6 right-6 text-white text-2xl hover:text-gray-200 transition"
+        className="absolute top-6 right-6 text-[#007c80] text-2xl hover:text-teal-700 transition"
         title="Back to Home"
       >
         <FaHome size={24} />
@@ -84,9 +84,12 @@ export default function Signup() {
         buttonText="Sign Up"
         onSubmit={handleSignup}
         footer={
-          <p className="text-sm mt-4 text-center text-white">
+          <p className="text-sm mt-4 text-center text-[#0f5d5f]">
             Already have an account?{" "}
-            <Link to="/login" className="font-semibold hover:underline">
+            <Link
+              to="/login"
+              className="font-semibold text-[#007c80] hover:text-teal-700 hover:underline"
+            >
               Log in
             </Link>
           </p>
@@ -98,7 +101,7 @@ export default function Signup() {
               type="text"
               name="fullName"
               placeholder="Full Name"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
               value={formData.fullName}
               onChange={handleChange}
               required
@@ -110,7 +113,7 @@ export default function Signup() {
               type="email"
               name="email"
               placeholder="Email"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
               value={formData.email}
               onChange={handleChange}
               required
@@ -122,7 +125,7 @@ export default function Signup() {
               type="password"
               name="password"
               placeholder="Password (min 8 characters)"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
               value={formData.password}
               onChange={handleChange}
               minLength="6"
@@ -135,7 +138,7 @@ export default function Signup() {
               type="password"
               name="confirmPassword"
               placeholder="Confirm Password"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-teal-200 rounded-md focus:ring-2 focus:ring-[#007c80] focus:border-transparent outline-none transition"
               value={formData.confirmPassword}
               onChange={handleChange}
               required
