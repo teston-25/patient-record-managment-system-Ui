@@ -7,8 +7,8 @@ const getBaseURL = () => {
     return "/api";
   }
   // In production, use the direct URL
-  // return "https://prms-backend-rrdo.onrender.com/";
-  return "http://localhost:5000/";
+  return "https://prms-backend-rrdo.onrender.com/";
+  // return "http://localhost:5000/";
 };
 
 const api = axios.create({
