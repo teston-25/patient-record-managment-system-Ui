@@ -23,6 +23,7 @@ import {
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import appointmentAPI from "../../../API/appointmentAPI";
+import Spinner from "../../../components/common/Spinner";
 
 const Appointments = () => {
   const dispatch = useDispatch();
@@ -191,7 +192,7 @@ const Appointments = () => {
         })
         .catch((error) => {
           if (error?.response?.status === 404) {
-            setDoctorTodaysAppointments([]); // No appointments today
+            setDoctorTodaysAppointments([]);
           } else {
             console.error("Error fetching today's doctor appointments:", error);
           }
@@ -253,7 +254,7 @@ const Appointments = () => {
 
       const matchesStatus =
         statusFilter === "All Status" ||
-        normalizedAppointmentStatus === statusFilter;
+        normalizedAppointmentStatus === statusFilter.toLowerCase();
 
       return matchesSearch && matchesDate && matchesStatus;
     });
@@ -288,7 +289,7 @@ const Appointments = () => {
   };
 
   const handleStatusUpdate = async (appointmentId, newStatus) => {
-    if (updatingStatus) return; // Prevent multiple clicks
+    if (updatingStatus) return;
     try {
       setUpdatingStatus(true);
       console.log("Updating appointment status:", { appointmentId, newStatus });
@@ -363,11 +364,8 @@ const Appointments = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-8">
-        <div className="flex items-center space-x-2">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-          <span>Loading appointments...</span>
-        </div>
+      <div className="py-8">
+        <Spinner />
       </div>
     );
   }

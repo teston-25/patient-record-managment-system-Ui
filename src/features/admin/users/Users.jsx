@@ -67,17 +67,19 @@ const UsersList = () => {
   });
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      dispatch(deleteUser(id))
-        .unwrap()
-        .then(() => {
-          toast.success("User has been removed!");
-        })
-        .catch((error) => {
-          toast.error("Failed to delete user");
-          console.error("Failed to delete user:", error);
-        });
-    }
+    toast.error(`Deletion for ${id} disabled in this public demo.`);
+    return;
+    // if (window.confirm("Are you sure you want to delete this user?")) {
+    //   dispatch(deleteUser(id))
+    //     .unwrap()
+    //     .then(() => {
+    //       toast.success("User has been removed!");
+    //     })
+    //     .catch((error) => {
+    //       toast.error("Failed to delete user");
+    //       console.error("Failed to delete user:", error);
+    //     });
+    // }
   };
 
   if (status === "loading") {
@@ -297,13 +299,21 @@ const UsersList = () => {
                                 </Link>
                               )}
                             </Menu.Item>
-                            <Menu.Item>
-                              {({ active }) => (
+                            <Menu.Item disabled={true}>
+                              {({ active, disabled }) => (
                                 <button
                                   onClick={() => handleDelete(user._id)}
-                                  className={`block w-full text-left px-4 py-2 text-sm text-red-600 ${active ? "bg-gray-100" : ""}`}
+                                  disabled={disabled}
+                                  title="Deletion is disabled for public testing"
+                                  className={`block w-full text-left px-4 py-2 text-sm ${
+                                    disabled
+                                      ? "text-gray-400 cursor-not-allowed bg-gray-50"
+                                      : active
+                                        ? "bg-gray-100 text-red-600"
+                                        : "text-red-600"
+                                  }`}
                                 >
-                                  Delete
+                                  Delete (Disabled)
                                 </button>
                               )}
                             </Menu.Item>
@@ -372,13 +382,20 @@ const UsersList = () => {
                           </button>
                         )}
                       </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
+                      <Menu.Item disabled={true}>
+                        {({ active, disabled }) => (
                           <button
                             onClick={() => handleDelete(user._id)}
-                            className={`block w-full text-left px-4 py-2 text-sm text-red-600 ${active ? "bg-gray-100" : ""}`}
+                            disabled={disabled}
+                            className={`block w-full text-left px-4 py-2 text-sm ${
+                              disabled
+                                ? "text-gray-400 cursor-not-allowed"
+                                : active
+                                  ? "bg-gray-100 text-red-600"
+                                  : "text-red-600"
+                            }`}
                           >
-                            Delete
+                            Delete (Disabled)
                           </button>
                         )}
                       </Menu.Item>

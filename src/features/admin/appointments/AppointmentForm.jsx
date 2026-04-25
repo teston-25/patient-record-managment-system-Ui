@@ -9,7 +9,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../users/userSlice";
 import { selectDoctorsWithState } from "../../../components/common/selectors";
-import toast from "react-hot-toast";
 
 const AppointmentForm = ({
   appointment,
@@ -21,8 +20,6 @@ const AppointmentForm = ({
   isAddMode = false, // new prop
   role = "admin",
 }) => {
-  const { user } = useSelector((state) => state.auth);
-  const userRole = user?.role || "admin";
   const dispatch = useDispatch();
   const {
     register,
@@ -87,10 +84,6 @@ const AppointmentForm = ({
   const validateContactInfo = () => {
     return email || phone ? true : "Either email or phone number is required";
   };
-
-  if (validateContactInfo() !== true) {
-    return toast.error(validateContactInfo());
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

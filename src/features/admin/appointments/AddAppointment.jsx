@@ -16,16 +16,17 @@ const AddAppointment = () => {
       const appointmentData = {
         patient: {
           email: data.patient.email || "",
-          ...(data.patient.phone && { phone: Number(data.patient.phone) })
+          ...(data.patient.phone && { phone: Number(data.patient.phone) }),
         },
         date: new Date(`${data.date}T${data.time}:00`).toISOString(),
         assignedTo: data.doctor,
         reason: data.reason,
-        status: data.status
+        status: data.status,
       };
       const result = await dispatch(addAppointment(appointmentData)).unwrap();
       // Handle backend response structure
-      const newAppointment = result?.data?.appointment || result?.appointment || result;
+      const newAppointment =
+        result?.data?.appointment || result?.appointment || result;
       if (newAppointment?._id) {
         toast.success("Appointment booked successfully!");
         // Refetch appointments to get full patient info
