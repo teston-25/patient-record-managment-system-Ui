@@ -96,12 +96,6 @@ const DoctorAppointmentsList = () => {
     }
   };
 
-  if (loading)
-    return (
-      <div className="py-8">
-        <Spinner />
-      </div>
-    );
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
   return (
@@ -169,68 +163,79 @@ const DoctorAppointmentsList = () => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {displayedAppointments.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="text-center py-8 text-gray-400">
-                  No appointments found.
-                </td>
-              </tr>
-            ) : (
-              displayedAppointments.map((appointment) => (
-                <tr key={appointment._id}>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    {appointment.patient?.firstName}{" "}
-                    {appointment.patient?.lastName}
+          {loading ? (
+            <tr>
+              {" "}
+              <td colSpan={4} className="py-8">
+                <div className="flex justify-center items-center">
+                  <Spinner />
+                </div>
+              </td>
+            </tr>
+          ) : (
+            <tbody className="bg-white divide-y divide-gray-200">
+              {displayedAppointments.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="text-center py-8 text-gray-400">
+                    No appointments found.
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    {appointment.date
-                      ? new Date(appointment.date).toLocaleDateString()
-                      : "-"}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <select
-                      value={appointment.status}
-                      onChange={(e) =>
-                        handleStatusChange(appointment._id, e.target.value)
-                      }
-                      className={`border rounded px-2 py-1 focus:outline-none
+                </tr>
+              ) : (
+                displayedAppointments.map((appointment) => (
+                  <tr key={appointment._id}>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      {appointment.patient?.firstName}{" "}
+                      {appointment.patient?.lastName}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      {appointment.date
+                        ? new Date(appointment.date).toLocaleDateString()
+                        : "-"}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <select
+                        value={appointment.status}
+                        onChange={(e) =>
+                          handleStatusChange(appointment._id, e.target.value)
+                        }
+                        className={`border rounded px-2 py-1 focus:outline-none
                         ${appointment.status === "pending" ? "bg-blue-100 text-blue-800" : ""}
                         ${appointment.status === "confirmed" ? "bg-yellow-100 text-yellow-800" : ""}
                         ${appointment.status === "completed" ? "bg-green-100 text-green-800" : ""}
                         ${appointment.status === "cancelled" ? "bg-red-100 text-red-800" : ""}`}
-                      disabled={
-                        statusUpdating[appointment._id] ||
-                        appointment.status === "completed" ||
-                        appointment.status === "cancelled"
-                      }
-                    >
-                      {getAllowedStatusOptions(appointment.status).map(
-                        (opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ),
-                      )}
-                    </select>
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
-                    <button
-                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
-                      onClick={() => {
-                        setSelectedPatientId(
-                          appointment.patient?._id || appointment.patient,
-                        );
-                        setShowHistoryModal(true);
-                      }}
-                    >
-                      View Medical History
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
+                        disabled={
+                          statusUpdating[appointment._id] ||
+                          appointment.status === "completed" ||
+                          appointment.status === "cancelled"
+                        }
+                      >
+                        {getAllowedStatusOptions(appointment.status).map(
+                          (opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <button
+                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
+                        onClick={() => {
+                          setSelectedPatientId(
+                            appointment.patient?._id || appointment.patient,
+                          );
+                          setShowHistoryModal(true);
+                        }}
+                      >
+                        View Medical History
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          )}
         </table>
       </div>
       {showHistoryModal && (

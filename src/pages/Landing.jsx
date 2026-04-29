@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 
 export default function Landing() {
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-white via-slate-50 to-teal-50 text-slate-800">
+    <div className="relative h-screen bg-gradient-to-br from-white via-slate-50 to-teal-50 text-slate-800 flex flex-col">
       {/* Overlay with subtle tint for depth */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/70 via-teal-50/40 to-teal-100/70 backdrop-blur-sm"></div>
 
-      <header className="relative z-10 px-6 md:px-10 py-5 md:py-7 flex flex-wrap justify-between items-center gap-3 md:gap-0">
+      <header className="relative z-10 px-6 md:px-10 py-5 md:py-7 flex flex-wrap justify-between items-center gap-3 md:gap-0 flex-shrink-0">
         <h1 className="text-2xl md:text-3xl font-extrabold text-[#007c80] drop-shadow-lg">
-          Seid Nur Dental Clinic
+          PRMS
         </h1>
         <div className="space-x-3 md:space-x-4">
           <Link
@@ -27,16 +27,16 @@ export default function Landing() {
       </header>
 
       {/* Centered Content */}
-      <main className="relative z-10 flex items-center justify-center min-h-[85vh] px-4 md:px-6">
-        <div className="bg-white/90 backdrop-blur-lg text-slate-800 rounded-2xl p-8 md:p-12 shadow-2xl border border-teal-100 max-w-5xl w-full">
+      <main className="relative z-10 flex items-center justify-center flex-1 px-4 md:px-6 overflow-hidden">
+        <div className="bg-white/90 backdrop-blur-lg text-slate-800 rounded-2xl p-8 md:p-12 shadow-2xl border border-teal-100 max-w-5xl w-full overflow-y-auto max-h-full">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center text-[#007c80] mb-4">
             Your Smile, Our Priority
           </h2>
           <p className="text-center text-lg md:text-xl text-slate-600 mb-8">
-            Welcome to Seid Nur Dental Clinic — providing trusted, affordable,
-            and modern dental care for patients of all ages. Our professional
-            team is committed to helping you achieve and maintain excellent oral
-            health with personalized care in a friendly environment.
+            Welcome — providing trusted, affordable, and modern dental care for
+            patients of all ages. Our professional team is committed to helping
+            you achieve and maintain excellent oral health with personalized
+            care in a friendly environment.
           </p>
 
           <h3 className="text-xl font-semibold text-blue-700 mb-4 text-center">
@@ -73,7 +73,7 @@ export default function Landing() {
         </div>
       </main>
 
-      <footer className="relative z-10 text-center py-6 text-sm text-gray-200">
+      <footer className="relative z-10 text-center py-6 text-sm text-gray-400 flex-shrink-0">
         &copy; {new Date().getFullYear()} Seid Nur Dental Clinic. All rights
         reserved.
       </footer>
